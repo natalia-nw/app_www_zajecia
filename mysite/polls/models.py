@@ -62,3 +62,34 @@ class Test(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class Stanowisko(models.Model):
+    nazwa = models.CharField(max_length=30)
+    opis = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return f"{self.nazwa}"
+
+
+class Osoba(models.Model):
+
+    class Plec(models.IntegerChoices):
+        KOBIETA = 1
+        MĘŻCZYZNA = 2
+        INNE = 3
+
+    imie = models.CharField(max_length=30)
+    nazwisko = models.CharField(max_length=30)
+    plec = models.IntegerField(choices=Plec.choices)
+    stanowisko = models.ForeignKey(Stanowisko, null=True, blank=True, on_delete=models.SET_NULL)
+    data_dodania = models.DateField('data dodania')
+
+    class Meta:
+        ordering = ["nazwisko"]
+
+    def __str__(self):
+        return '%s %s' % (self.imie, self.nazwisko)
+
+    def was_published_recently(self):
+        return self.data_dodania >= datetime.today()
