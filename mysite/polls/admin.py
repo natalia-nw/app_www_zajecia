@@ -11,7 +11,7 @@ admin.site.register(Question)
 admin.site.register(Team)
 # admin.site.register(Person)
 admin.site.register(Test)
-admin.site.register(Stanowisko)
+# admin.site.register(Stanowisko)
 # admin.site.register(Osoba)
 
 
@@ -22,9 +22,21 @@ class PersonAdmin(admin.ModelAdmin):
 admin.site.register(Person, PersonAdmin)
 
 
+class StanowiskoAdmin(admin.ModelAdmin):
+    list_display = ['nazwa']
+    list_filter = ['nazwa']
+
+
+admin.site.register(Stanowisko, StanowiskoAdmin)
+
+
 class OsobaAdmin(admin.ModelAdmin):
-    list_display = ['imie', 'nazwisko', 'stanowisko', 'data_dodania']
+    list_display = ['imie', 'nazwisko', 'stanowisko_id', 'data_dodania']
     list_filter = ('stanowisko', 'data_dodania')
+
+    @admin.display(description='stanowisko(id)')
+    def stanowisko_id(self, obj):
+        return str(obj.stanowisko.nazwa) + " (" + str(obj.stanowisko.id) + ")"
 
 
 admin.site.register(Osoba, OsobaAdmin)

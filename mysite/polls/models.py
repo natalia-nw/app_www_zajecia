@@ -91,5 +91,5 @@ class Osoba(models.Model):
     def __str__(self):
         return '%s %s' % (self.imie, self.nazwisko)
 
-    def was_published_recently(self):
+    def data(self):
         return self.data_dodania >= datetime.today()
