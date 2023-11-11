@@ -36,7 +36,9 @@ class OsobaAdmin(admin.ModelAdmin):
 
     @admin.display(description='stanowisko(id)')
     def stanowisko_id(self, obj):
-        return str(obj.stanowisko.nazwa) + " (" + str(obj.stanowisko.id) + ")"
+        if obj.stanowisko is not None:
+            return str(obj.stanowisko.nazwa) + " (" + str(obj.stanowisko.id) + ")"
+        return "-"
 
 
 admin.site.register(Osoba, OsobaAdmin)
