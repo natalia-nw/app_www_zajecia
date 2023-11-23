@@ -1,6 +1,6 @@
+import datetime
 from rest_framework import serializers
 from .models import Person, Team, MONTHS, SHIRT_SIZES, Question, Choice, ANSWER, Test, Stanowisko, Osoba
-import datetime
 
 
 class PersonSerializer(serializers.Serializer):
@@ -73,7 +73,7 @@ class StanowiskoModelSerializer(serializers.ModelSerializer):
 class OsobaModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Osoba
-        fields = ['id', 'imie', 'nazwisko', 'plec', 'stanowisko', 'data_dodania']
+        fields = ['id', 'imie', 'nazwisko', 'plec', 'stanowisko', 'data_dodania', 'wlasciciel']
         read_only_fields = ['id']
 
     def validate_imie(self, value):

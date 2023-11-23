@@ -1,7 +1,7 @@
 import datetime
-
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Question(models.Model):
@@ -84,6 +84,7 @@ class Osoba(models.Model):
     plec = models.IntegerField(choices=Plec.choices)
     stanowisko = models.ForeignKey(Stanowisko, null=True, blank=True, on_delete=models.SET_NULL)
     data_dodania = models.DateField('data dodania')
+    wlasciciel = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     class Meta:
         ordering = ["nazwisko"]
