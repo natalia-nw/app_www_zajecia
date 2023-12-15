@@ -14,4 +14,6 @@ urlpatterns = [
     path('stanowiska/<int:pk>/', views.stanowisko_detail),
     path('stanowisko/<int:id>/members/', views.osoba_stanowisko),
     path('api-token-auth/', authViews.obtain_auth_token),
+    path('osoby/view/', views.osoba_view),
+    path('osoby/list', views.OsobaListView.as_view()),
 ]

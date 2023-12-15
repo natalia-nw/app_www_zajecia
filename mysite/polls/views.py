@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import permission_required
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -7,6 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Osoba, Stanowisko
 from .serializers import OsobaModelSerializer, StanowiskoModelSerializer
+
+from django.core.exceptions import PermissionDenied
+from rest_framework.views import APIView
+from rest_framework import permissions
+from django.core.exceptions import PermissionDenied
+from .permissions import CustomDjangoModelPermissions
+import copy
 
 
 class BearerTokenAuthentication(TokenAuthentication):
@@ -21,9 +29,7 @@ def index(request):
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def osoba_list(request):
-    """
-    Lista wszystkich obiektów modelu Osoba
-    """
+
     if request.method == 'GET':
         persons = Osoba.objects.filter(wlasciciel=request.user)
         serializer = OsobaModelSerializer(persons, many=True)
@@ -116,9 +122,6 @@ def osoba_list_zawiera(request, search_string):
 
 @api_view(['GET'])
 def stanowisko_list(request):
-    """
-    Lista wszystkich obiektów modelu Stanowisko
-    """
     if request.method == 'GET':
         st = Stanowisko.objects.all()
         serializer = StanowiskoModelSerializer(st, many=True)
@@ -147,3 +150,26 @@ def stanowisko_detail(request, pk):
     if request.method == 'DELETE':
         stanowisko.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def osoba_view(request):
+    if not request.user.has_perm('polls.view_osoba') or not request.user.has_perm('polls.can_view_other_persons'):
+        return HttpResponse(f"Nie masz uprawnien view_osoba i can_view_other_persons.")
+    osoby = Osoba.objects.all()
+    message = ''
+    for osoba in osoby:
+        message += f'<br>{osoba}'
+    return HttpResponse(f"Masz uprawnienia view_osoba i can_view_other_persons. <br>{message}")
+
+
+class OsobaListView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, CustomDjangoModelPermissions]
+
+    def get_queryset(self):
+        return Osoba.objects.all()
+
+    def get(self, request):
+        osoby = Osoba.objects.all()
+        serializer = OsobaModelSerializer(osoby, many=True)
+        return Response(serializer.data)
