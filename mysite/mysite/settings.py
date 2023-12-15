@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -129,4 +130,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'polls.permissions.CustomDjangoModelPermissions',
     )
+}
+
+GRAPHENE = {
+    "SCHEMA": "schema.schema"
 }
